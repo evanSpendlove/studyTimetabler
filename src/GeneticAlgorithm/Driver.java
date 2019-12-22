@@ -2,7 +2,9 @@ package GeneticAlgorithm;
 
 import GeneticAlgorithm.Events.Event;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Driver
 {
@@ -67,17 +69,18 @@ public class Driver
 
     }
 
-
-
-    private void printTimetableAsTable(Timetable schedule, int generation)
+    private void printTimetableAsTable(Timetable timetable, int generation)
     {
-        ArrayList<Event> events = schedule.getEvents();
+        ArrayList<Event> events = timetable.getEvents();
         System.out.print("\n                ");
-        System.out.println("Class # |  Dept | Course (number, max # of students) | Room (Capacity) |    Instructor (ID)    | Meeting Time (ID)" );
+        System.out.println("Event # |  Type | Module Code - Module Name (Study Hours) |  Event Time [ID - Time]" ); // Change
         System.out.print("               ");
         System.out.print("-----------------------------------------------------------------------------------------");
         System.out.println("-----------------------------------");
 
+        // Need to sort and print by day.
+        sortEventsByTime(timetable, new int[5]);
+        
         events.forEach(x ->
         {
             System.out.print("                    ");
@@ -87,7 +90,7 @@ public class Driver
             eventNumber++;
         });
 
-        if(schedule.getFitness() == 1) System.out.println("> Solution found in " + (generation + 1) + " generations");
+        if(timetable.getFitness() == 1) System.out.println("> Solution found in " + (generation + 1) + " generations");
         System.out.print("-------------------------------------------------------------------------------------------");
         System.out.println("----------------------------------------------------------------------------------------------");
     }
@@ -104,5 +107,13 @@ public class Driver
         System.out.println("----------------------------------------------------------------------------------------------");
         System.out.print("-------------------------------------------------------------------------------------");
         System.out.println("----------------------------------------------------------------------------------------------");
+    }
+    
+    private void sortEventsByTime(Timetable timetable, int[] dayEndIndices)
+    {
+        ArrayList<Event> sortedEvents = timetable.getEvents();
+        sortedEvents.sort(Comparator.comparing(Event::getTime));
+
+
     }
 }

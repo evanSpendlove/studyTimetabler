@@ -1,11 +1,11 @@
 package GeneticAlgorithm.Events;
 
-public class EventTime
+public class EventTime implements Comparable
 {
     private String id;
     private String time;
 
-    public String getId() {
+    public String getID() {
         return id;
     }
 
@@ -34,7 +34,7 @@ public class EventTime
         if (!(obj instanceof EventTime)) return false;
         EventTime o = (EventTime) obj;
 
-        if(o.getId().compareTo(this.getId()) == 0)
+        if(o.getID().compareTo(this.getID()) == 0)
         {
             if(o.getTime().compareTo(this.getTime()) == 0)
             {
@@ -43,6 +43,88 @@ public class EventTime
         }
 
         return false;
+    }
+
+    public int getDayFromID(String id)
+    {
+        if(id.contains("Mon"))
+        {
+            return 0;
+        }
+        else if(id.contains("Tue"))
+        {
+            return 1;
+        }
+        else if(id.contains("Wed"))
+        {
+            return 2;
+        }
+        else if(id.contains("Thur"))
+        {
+            return 3;
+        }
+        else if(id.contains("Fri"))
+        {
+            return 4;
+        }
+        else if(id.contains("Sat"))
+        {
+            return 5;
+        }
+        else if(id.contains("Sun"))
+        {
+            return 6;
+        }
+        else
+        {
+            throw new IllegalArgumentException("ID must contain a valid day of the week.");
+        }
+    }
+
+    public int getTimeFromString(String dayAndTime)
+    {
+        int firstColon = dayAndTime.indexOf(':');
+        String onlyTime = dayAndTime.substring(firstColon+1);
+        System.out.println(onlyTime);
+        int secondColon = onlyTime.indexOf(':');
+
+        return Integer.parseInt(onlyTime.substring(secondColon - 2, secondColon));
+    }
+
+    @Override
+    public int compareTo(Object obj)
+    {
+        EventTime secondObj = (EventTime) obj;
+        int day1 = getDayFromID(this.getID());
+        int day2 = getDayFromID(secondObj.getID());
+
+
+        if(day1 > day2)
+        {
+            return 1;
+        }
+        else if(day1 < day2)
+        {
+            return -1;
+        }
+        else // Two events must be on the same day.
+        {
+            int time1 = getTimeFromString(this.getTime());
+            int time2 = getTimeFromString(secondObj.getTime());
+
+            if(time1 > time2)
+            {
+                return 1;
+            }
+            else if(time1 < time2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
 
 }
