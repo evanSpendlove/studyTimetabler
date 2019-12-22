@@ -3,6 +3,7 @@ package GeneticAlgorithm.Events;
 public class Event
 {
     public enum type { LECTURE, STUDY, OTHER } // Types of events
+    private int id;
     private EventTime time; // Time of the event
     private Module module = null; // Which module does it relate to
     private type eventType; // What type is it?
@@ -20,31 +21,18 @@ public class Event
         return module;
     }
 
-    public void setModule(Module module) {
-        this.module = module;
-    }
+    public int getID() { return id; }
 
     public type getEventType() {
         return eventType;
     }
 
-    public void setEventType(type eventType) {
-        this.eventType = eventType;
-    }
-
-    // Overloaded Constructor
-    public Event(type eventType, Module module, EventTime time)
+    // Constructor
+    public Event(int id, type eventType, Module module)
     {
+        this.id = id;
         this.eventType = eventType;
         this.module = module;
-        this.time = time;
-    }
-
-    // For non lecture-related events, i.e. lunch
-    public Event(type eventType, EventTime time)
-    {
-        this.eventType = eventType;
-        this.time = time;
     }
 
     @Override
