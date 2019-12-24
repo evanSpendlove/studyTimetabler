@@ -4,7 +4,7 @@
 ## Background   
 The problem statement for this project was as follows:   
     ``` Design a program that will generate a valid timetable of study sessions given certain, variable constraints.```   
-When I began researching for ways of addressing the timetabling problem, I came across Genetic Algorithms as a viable solution. I began reading several sources, such as academic papers, on this topic while preparing to start this project. This became my first SLP (Self-Learning Project). The project centered around using Genetic Algorithms to solve constraint-based scheduling/timetabling problems.
+When I began researching ways of addressing the timetabling problem, I came across Genetic Algorithms as a viable solution. I began reading several sources, such as academic papers, on this topic while preparing to start this project. This became my first SLP (Self-Learning Project). The project centered around using Genetic Algorithms to solve constraint-based scheduling/timetabling problems.
 
 ## Project Overview
 
