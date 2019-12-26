@@ -67,21 +67,40 @@ public class Timetable
     private double calculateFitness()
     {
         numbOfConflicts = 0;
-        int availablePreferredTimes = Driver.AVAILABLE_PREF_TIMES;
+        int availablePreferredTimes = Driver.getAvailablePrefTimes();
         int weights[] = new int[3];
         weights[0] = 1; // Average Hours preference
         weights[1] = 1; // Time of day preference
         weights[2] = 5; // Two events occurring simultaneously is a critical error
 
-        int averageHoursPerDay = this.getEvents().size() / Driver.NUMBER_OF_DAYS_PER_WEEK;
+        int averageHoursPerDay = this.getEvents().size() / Driver.getDaysPerWeek();
         int[] hoursPerDay = new int[5];
 
         for(int i = 0; i < events.size(); i++)
         {
             if(availablePreferredTimes > 0)
             {
-                int startHour = Driver.EVENT_START_TIME + ((Driver.NUMBER_OF_EVENT_TIMES * Driver.TIME_PREFERENCE)/3);
-                int endHour = startHour + (Driver.NUMBER_OF_EVENT_TIMES/3);
+                int startHour;
+                int endHour;
+                int offset = Driver.getHoursPerDay() / 3;
+
+                switch(Driver.getTimePreference())
+                {
+                    case MORNING:
+                        startHour = Driver.getDayStartTime();
+                        endHour = Driver.getDayStartTime() + 1 * offset;
+                        break;
+                    case DAY:
+                        startHour = Driver.getDayStartTime() + 1 * offset;
+                        endHour = startHour + 1 * offset;
+                        break;
+                    case EVENING:
+                        startHour = Driver.getDayStartTime() + 2 * offset;
+                        endHour = Driver.getDayStartTime() + Driver.getHoursPerDay(); // End of Day
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Driver: Time Preference is set to an invalid value.");
+                }
 
                 int time = events.get(i).getTime().getTimeFromString(events.get(i).getTime().getTime());
 

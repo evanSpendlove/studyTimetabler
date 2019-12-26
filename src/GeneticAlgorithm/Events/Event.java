@@ -3,10 +3,10 @@ package GeneticAlgorithm.Events;
 public class Event
 {
     public enum type { LECTURE, LECTURE_REVIEW, STUDY ,EXAM_PREP, OTHER } // Types of events
-    private int id; // Unique event ID
-    private EventTime time; // Time of the event
+    private int id = -1; // Unique event ID
+    private EventTime time = null; // Time of the event
     private Module module = null; // Which module does it relate to
-    private type eventType; // What type of event is it?
+    private type eventType = null; // What type of event is it?
 
     // Getters and Setters
     public EventTime getTime() {

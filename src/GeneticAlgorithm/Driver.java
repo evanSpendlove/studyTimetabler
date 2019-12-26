@@ -1,5 +1,6 @@
 package GeneticAlgorithm;
 
+import GeneticAlgorithm.CommandLineIO.UserInput;
 import GeneticAlgorithm.Events.Event;
 
 import java.util.ArrayList;
@@ -32,11 +33,14 @@ public class Driver
     public static final double CROSSOVER_RATE = 0.9;
     public static final int TOURNAMENT_SELECTION_SIZE = 3;
     public static final int NUMBER_OF_ELITE_TIMETABLES = 1;
-    public static final int EVENT_START_TIME = 9;
-    public static final int NUMBER_OF_EVENT_TIMES = 9;
-    public static final int NUMBER_OF_DAYS_PER_WEEK = 5;
-    public static final int TIME_PREFERENCE = 0; // {0 : Morning, 1 : Day, 2 : Evening}
-    public static int AVAILABLE_PREF_TIMES = 0;
+
+    // User defined Variables
+    public enum timesOfDay {MORNING, DAY, EVENING};
+    private static int DAY_START_TIME = 9;
+    private static int HOURS_PER_DAY = 9;
+    private static int DAYS_PER_WEEK = 5;
+    private static timesOfDay TIME_PREFERENCE;
+    private static int AVAILABLE_PREF_TIMES = 0; // Set elsewhere
 
     // Instance variables
     private Data data;
@@ -46,7 +50,14 @@ public class Driver
     public static void main(String[] args)
     {
         Driver driver = new Driver();
-        driver.data = new Data();
+        UserInput inputDriver = new UserInput();
+
+        driver.data = new Data(inputDriver.userInputRequired(), inputDriver);
+
+        System.out.println("Number of days per week: " + Driver.getDaysPerWeek());
+        System.out.println("Number of hours per day: " + Driver.getHoursPerDay());
+        System.out.println("Day Start time: " + Driver.getDayStartTime());
+
         int generationNumber = 0;
         driver.printAvailableData();
 
@@ -72,36 +83,92 @@ public class Driver
 
         System.out.println("Preferences available: " + Driver.AVAILABLE_PREF_TIMES + ", TimeSlots Available: " + driver.data.getEventTimes().size());
 
-        while(!solutionFound) // While we don't have a valid Timetable
+        while(!solutionFound && generationNumber < 150000) // While we don't have a valid Timetable
         {
             population = geneticAlgorithm.evolve(population).sortByFitness();
             driver.timetableNumber = 0;
 
             generationNumber++;
 
-            // System.out.println("> Generation #" + ++generationNumber);
-
             if(population.getTimetables().get(0).getFitness() > 3)
             {
                 solutionFound = true;
-
-                System.out.println("> Generation #" + ++generationNumber);
-                System.out.print("  Timetable # |                                              ");
-                System.out.print("Classes [dept, class, room, instructor, meeting-time]       ");
-                System.out.println("                                          | Fitness   | Conflicts");
-                System.out.print("-------------------------------------------------------------------------------------------");
-                System.out.println("----------------------------------------------------------------------------------------------");
-
-                population.getTimetables().forEach(schedule -> System.out.println("          " + driver.timetableNumber++
-                        + "  | " + schedule + "  |  " + String.format("%.5f", schedule.getFitness())
-                        + "  |  " + schedule.getNumbOfConflicts()));
-
-                driver.printTimetableAsTable(population.getTimetables().get(0), generationNumber); // Print fittest schedule
-                driver.eventNumber = 1;
             }
         }
 
+        System.out.println("> Generation #" + generationNumber);
+        System.out.print("  Timetable # |                                              ");
+        System.out.print("Classes [dept, class, room, instructor, meeting-time]       ");
+        System.out.println("                                          | Fitness   | Conflicts");
+        System.out.print("-------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------");
+
+        population.getTimetables().forEach(schedule -> System.out.println("          " + driver.timetableNumber++
+                + "  | " + schedule + "  |  " + String.format("%.5f", schedule.getFitness())
+                + "  |  " + schedule.getNumbOfConflicts()));
+
+        driver.printTimetableAsTable(population.getTimetables().get(0), generationNumber); // Print fittest schedule
+        // driver.eventNumber = 1;
+
     }
+
+    // Getters & Setters
+
+    public static int getDayStartTime() {
+        return DAY_START_TIME;
+    }
+
+    public static void setDayStartTime(int eventStartTime) {
+        DAY_START_TIME = eventStartTime;
+    }
+
+    public static int getHoursPerDay() {
+        return HOURS_PER_DAY;
+    }
+
+    public static void setHoursPerDay(int hoursPerDay) {
+        HOURS_PER_DAY = hoursPerDay;
+    }
+
+    public static int getDaysPerWeek() {
+        return DAYS_PER_WEEK;
+    }
+
+    public static void setDaysPerWeek(int daysPerWeek) {
+        DAYS_PER_WEEK = daysPerWeek;
+    }
+
+    public static timesOfDay getTimePreference() {
+        return TIME_PREFERENCE;
+    }
+
+    public static void setTimePreference(int timePreference)
+    {
+        switch(timePreference)
+        {
+            case 0:
+                TIME_PREFERENCE = timesOfDay.MORNING;
+                break;
+            case 1:
+                TIME_PREFERENCE = timesOfDay.DAY;
+                break;
+            case 2:
+                TIME_PREFERENCE = timesOfDay.EVENING;
+                break;
+            default:
+                throw new IllegalArgumentException("Time of Day Preference must be between range {0, 2} inclusive.");
+        }
+    }
+
+    public static int getAvailablePrefTimes() {
+        return AVAILABLE_PREF_TIMES;
+    }
+
+    public static void setAvailablePrefTimes(int availablePrefTimes) {
+        AVAILABLE_PREF_TIMES = availablePrefTimes;
+    }
+
+    // Utility Functions
 
     private void printTimetableAsTable(Timetable timetable, int generation)
     {
@@ -147,7 +214,6 @@ public class Driver
     {
         ArrayList<Event> sortedEvents = timetable.getEvents();
         sortedEvents.sort(Comparator.comparing(Event::getTime));
-
 
     }
 }

@@ -1,5 +1,6 @@
 package GeneticAlgorithm;
 
+import GeneticAlgorithm.CommandLineIO.UserInput;
 import GeneticAlgorithm.Events.Event;
 import GeneticAlgorithm.Events.EventTime;
 import GeneticAlgorithm.Events.Module;
@@ -29,30 +30,40 @@ public class Data
     }
 
     // Initialise method
-    public Data initialise()
+    public Data initialise(boolean userDefined, UserInput input)
     {
+        input.initializeTimetable(userDefined); // Set up the timetable
+
         // Create new EventTimes
         initialiseEventTimes();
 
-        initialiseModules();
+        if(userDefined)
+        {
+            modules = input.getModules();
+            removeLecturesFromTimetable(input.getLectureTimes());
+        }
+        else
+        {
+            initialiseModules();
 
-        // Remove lectures from available times
-        removeLecturesFromTimetable();
+            // Remove lectures from available times
+            removeLecturesFromTimetable();
 
-        // Remove lunch breaks from available times
-        // TODO: Remove lunch breaks from available times
+            // Remove lunch breaks from available times
+            // TODO: Remove lunch breaks from available times
+        }
 
         checkPreferencePossible();
 
         System.out.println("Number of Events: " + numberOfEvents + ", Number of Preferred Times: " + numberOfPreferredTimes);
 
-        Driver.AVAILABLE_PREF_TIMES = numberOfPreferredTimes;
+        Driver.setAvailablePrefTimes(numberOfPreferredTimes);
 
         return this;
     }
 
     // Constructor
-    public Data() { initialise();}
+    public Data(boolean userDefined, UserInput input) { initialise(userDefined, input);}
 
     // Utility Methods
 
@@ -75,11 +86,11 @@ public class Data
         eventTimes = new ArrayList<EventTime>();
 
         // Create new EventTimes
-        for(int day = 0; day < Driver.NUMBER_OF_DAYS_PER_WEEK; day++) // For each day of the week
+        for(int day = 0; day < Driver.getDaysPerWeek(); day++) // For each day of the week
         {
-            for(int time = 0; time < Driver.NUMBER_OF_EVENT_TIMES; time++) // For each of the possible time slots
+            for(int time = 0; time < Driver.getHoursPerDay(); time++) // For each of the possible time slots
             {
-                int currentTime = Driver.EVENT_START_TIME + time; // Gets the current time
+                int currentTime = Driver.getDayStartTime() + time; // Gets the current time
 
                 EventTime newEventTime = constructEventTime(day, currentTime);
 
@@ -119,10 +130,34 @@ public class Data
         eventTimes.removeAll(lectures); // Remove all lectures as these time slots are taken
     }
 
+    private void removeLecturesFromTimetable(ArrayList<EventTime> lectures)
+    {
+        eventTimes.removeAll(lectures); // Remove all lectures as these time slots are taken
+    }
+
     private void checkPreferencePossible()
     {
-        int startHour = Driver.EVENT_START_TIME + ((Driver.NUMBER_OF_EVENT_TIMES * Driver.TIME_PREFERENCE)/3);
-        int endHour = startHour + (Driver.NUMBER_OF_EVENT_TIMES/3);
+        int startHour;
+        int endHour;
+        int offset = Driver.getHoursPerDay() / 3;
+
+        switch(Driver.getTimePreference())
+        {
+            case MORNING:
+                startHour = Driver.getDayStartTime();
+                endHour = Driver.getDayStartTime() + 1 * offset;
+                break;
+            case DAY:
+                startHour = Driver.getDayStartTime() + 1 * offset;
+                endHour = startHour + 1 * offset;
+                break;
+            case EVENING:
+                startHour = Driver.getDayStartTime() + 2 * offset;
+                endHour = Driver.getDayStartTime() + Driver.getHoursPerDay(); // End of Day
+                break;
+            default:
+                throw new IllegalArgumentException("Driver: Time Preference is set to an invalid value.");
+        }
 
         System.out.println("Pref Start Time: " + startHour + ", Pref End Time: " + endHour);
 
@@ -143,7 +178,7 @@ public class Data
         eventTimes.remove(target); // Remove target
     }
 
-    private EventTime constructEventTime(int day, int time)
+    public static EventTime constructEventTime(int day, int time)
     {
         String newEventTime = new String();
         String newEventID = new String();
@@ -176,12 +211,12 @@ public class Data
         }
 
         // Then, add the time
-        if(time == Driver.EVENT_START_TIME)
+        if(time == Driver.getDayStartTime())
         {
             newEventTime += "0";
-            newEventTime += Driver.EVENT_START_TIME;
+            newEventTime += Driver.getDayStartTime();
             newEventID += "0";
-            newEventID +=  + Driver.EVENT_START_TIME;
+            newEventID +=  + Driver.getDayStartTime();
         }
         else
         {
