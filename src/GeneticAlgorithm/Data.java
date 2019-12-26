@@ -1,5 +1,6 @@
 package GeneticAlgorithm;
 
+import GeneticAlgorithm.Events.Event;
 import GeneticAlgorithm.Events.EventTime;
 import GeneticAlgorithm.Events.Module;
 
@@ -12,6 +13,7 @@ public class Data
     private ArrayList<Module> modules;
     private ArrayList<EventTime> eventTimes;
     private int numberOfEvents = 0;
+    private int numberOfPreferredTimes = 0;
 
     // Getters
     public ArrayList<Module> getModules() {
@@ -34,15 +36,17 @@ public class Data
 
         initialiseModules();
 
-        System.out.println(eventTimes);
-
         // Remove lectures from available times
         removeLecturesFromTimetable();
 
-        System.out.println(eventTimes);
-
         // Remove lunch breaks from available times
         // TODO: Remove lunch breaks from available times
+
+        checkPreferencePossible();
+
+        System.out.println("Number of Events: " + numberOfEvents + ", Number of Preferred Times: " + numberOfPreferredTimes);
+
+        Driver.AVAILABLE_PREF_TIMES = numberOfPreferredTimes;
 
         return this;
     }
@@ -75,51 +79,11 @@ public class Data
         {
             for(int time = 0; time < Driver.NUMBER_OF_EVENT_TIMES; time++) // For each of the possible time slots
             {
-                int currentTime = Integer.parseInt(Driver.EVENT_START_TIME) + time; // Gets the current time
-                String newEventTime = new String();
-                String id = new String();
+                int currentTime = Driver.EVENT_START_TIME + time; // Gets the current time
 
-                // First add the day
-                switch(day)
-                {
-                    case 0:
-                        newEventTime += "Monday: ";
-                        id += "Mon";
-                        break;
-                    case 1:
-                        newEventTime += "Tuesday: ";
-                        id += "Tue";
-                        break;
-                    case 2:
-                        newEventTime += "Wednesday: ";
-                        id += "Wed";
-                        break;
-                    case 3:
-                        newEventTime += "Thursday: ";
-                        id += "Thur";
-                        break;
-                    case 4:
-                        newEventTime += "Friday: ";
-                        id += "Fri";
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid day of the week");
-                }
+                EventTime newEventTime = constructEventTime(day, currentTime);
 
-                // Then, add the time
-                if(time == 0)
-                {
-                    newEventTime += Driver.EVENT_START_TIME;
-                    id += Driver.EVENT_START_TIME;
-                }
-                else
-                {
-                    newEventTime += Integer.toString(currentTime);
-                    id += Integer.toString(currentTime);
-                }
-
-                newEventTime += ":00";
-                eventTimes.add(new EventTime(id, newEventTime));
+                eventTimes.add(newEventTime);
             }
         }
     }
@@ -153,6 +117,81 @@ public class Data
                         ));
 
         eventTimes.removeAll(lectures); // Remove all lectures as these time slots are taken
+    }
+
+    private void checkPreferencePossible()
+    {
+        int startHour = Driver.EVENT_START_TIME + ((Driver.NUMBER_OF_EVENT_TIMES * Driver.TIME_PREFERENCE)/3);
+        int endHour = startHour + (Driver.NUMBER_OF_EVENT_TIMES/3);
+
+        System.out.println("Pref Start Time: " + startHour + ", Pref End Time: " + endHour);
+
+        for(int i = 0; i < eventTimes.size(); i++)
+        {
+            int currentTime = eventTimes.get(i).getTimeFromString(eventTimes.get(i).getTime());
+
+            if(currentTime >= startHour && currentTime <= endHour) // If the current time lies within the preferred range
+            {
+                this.numberOfPreferredTimes++; // Increment number of preferred times that are available
+            }
+        }
+    }
+
+    private void removeEventTime(int in_day, int in_time)
+    {
+        EventTime target = constructEventTime(in_day, in_time); // Generate target EventTime
+        eventTimes.remove(target); // Remove target
+    }
+
+    private EventTime constructEventTime(int day, int time)
+    {
+        String newEventTime = new String();
+        String newEventID = new String();
+
+        // First add the day
+        switch(day)
+        {
+            case 0:
+                newEventTime += "Monday: ";
+                newEventID += "Mon";
+                break;
+            case 1:
+                newEventTime += "Tuesday: ";
+                newEventID += "Tue";
+                break;
+            case 2:
+                newEventTime += "Wednesday: ";
+                newEventID += "Wed";
+                break;
+            case 3:
+                newEventTime += "Thursday: ";
+                newEventID += "Thur";
+                break;
+            case 4:
+                newEventTime += "Friday: ";
+                newEventID += "Fri";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid day of the week");
+        }
+
+        // Then, add the time
+        if(time == Driver.EVENT_START_TIME)
+        {
+            newEventTime += "0";
+            newEventTime += Driver.EVENT_START_TIME;
+            newEventID += "0";
+            newEventID +=  + Driver.EVENT_START_TIME;
+        }
+        else
+        {
+            newEventTime += Integer.toString(time);
+            newEventID += Integer.toString(time);
+        }
+
+        newEventTime += ":00";
+
+        return new EventTime(newEventID, newEventTime);
     }
 
 }

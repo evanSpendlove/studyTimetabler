@@ -1,5 +1,6 @@
 package GeneticAlgorithm;
 
+import GeneticAlgorithm.Events.Event;
 import java.util.ArrayList;
 
 public class GeneticAlgorithm
@@ -41,23 +42,55 @@ public class GeneticAlgorithm
         return crossoverPopulation;
     }
 
-    Timetable crossoverTimetable(Timetable schedule1, Timetable schedule2)
+    Timetable crossoverTimetable(Timetable timetable1, Timetable timetable2)
     {
-        Timetable crossoverSchedule = new Timetable(data).initialize();
+        Timetable crossoverTimetable = new Timetable(data).initialize();
 
-        for(int i = 0; i < crossoverSchedule.getEvents().size(); i++)
+        timetable1.getEvents().sort((Event event1, Event event2) ->
         {
-            if(Math.random() > 0.5)
+            if(event1.getID() > event2.getID())
             {
-                crossoverSchedule.getEvents().set(i, schedule1.getEvents().get(i));
+                return 1;
+            }
+            else if(event1.getID() == event2.getID())
+            {
+                return 0;
             }
             else
             {
-                crossoverSchedule.getEvents().set(i, schedule2.getEvents().get(i));
+                return -1;
+            }
+        });
+
+        timetable2.getEvents().sort((Event event1, Event event2) ->
+        {
+            if(event1.getID() > event2.getID())
+            {
+                return 1;
+            }
+            else if(event1.getID() == event2.getID())
+            {
+                return 0;
+            }
+            else
+            {
+                return -1;
+            }
+        });
+
+        for(int i = 0; i < crossoverTimetable.getEvents().size(); i++)
+        {
+            if(Math.random() > 0.5)
+            {
+                crossoverTimetable.getEvents().set(i, timetable1.getEvents().get(i));
+            }
+            else
+            {
+                crossoverTimetable.getEvents().set(i, timetable2.getEvents().get(i));
             }
         }
 
-        return crossoverSchedule;
+        return crossoverTimetable;
     }
 
     Population selectTournamentPopulation(Population population)

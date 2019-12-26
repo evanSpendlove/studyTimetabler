@@ -67,19 +67,56 @@ public class Timetable
     private double calculateFitness()
     {
         numbOfConflicts = 0;
+        int availablePreferredTimes = Driver.AVAILABLE_PREF_TIMES;
+        int weights[] = new int[3];
+        weights[0] = 1; // Average Hours preference
+        weights[1] = 1; // Time of day preference
+        weights[2] = 5; // Two events occurring simultaneously is a critical error
+
+        int averageHoursPerDay = this.getEvents().size() / Driver.NUMBER_OF_DAYS_PER_WEEK;
+        int[] hoursPerDay = new int[5];
 
         for(int i = 0; i < events.size(); i++)
         {
+            if(availablePreferredTimes > 0)
+            {
+                int startHour = Driver.EVENT_START_TIME + ((Driver.NUMBER_OF_EVENT_TIMES * Driver.TIME_PREFERENCE)/3);
+                int endHour = startHour + (Driver.NUMBER_OF_EVENT_TIMES/3);
+
+                int time = events.get(i).getTime().getTimeFromString(events.get(i).getTime().getTime());
+
+                if(time < startHour || time > endHour) // If the event lies outside the desired time range
+                {
+                    numbOfConflicts = numbOfConflicts + weights[1];
+                }
+                else
+                {
+                    availablePreferredTimes--;
+                }
+            }
+
+            int curDay = events.get(i).getTime().getDayFromID(events.get(i).getTime().getTime());
+
+            hoursPerDay[curDay]++;
+
             for(int j = 0; j < events.size(); j++)
             {
                 if(events.get(i).getTime() == events.get(j).getTime() && events.get(i).getID() != events.get(j).getID()) // If two unique events occur at the same time
                 {
-                    numbOfConflicts++;
+                    numbOfConflicts = numbOfConflicts + weights[2];
                 }
             }
         }
 
-        return (1 / (double) (numbOfConflicts + 1));
+        for(int i = 0; i < hoursPerDay.length; i++)
+        {
+            if(hoursPerDay[i] > averageHoursPerDay)
+            {
+                numbOfConflicts = numbOfConflicts + weights[0];
+            }
+        }
+
+        return (5 / (double) (numbOfConflicts + 1));
     }
 
     @Override

@@ -2,11 +2,11 @@ package GeneticAlgorithm.Events;
 
 public class Event
 {
-    public enum type { LECTURE, STUDY, OTHER } // Types of events
-    private int id;
+    public enum type { LECTURE, LECTURE_REVIEW, STUDY ,EXAM_PREP, OTHER } // Types of events
+    private int id; // Unique event ID
     private EventTime time; // Time of the event
     private Module module = null; // Which module does it relate to
-    private type eventType; // What type is it?
+    private type eventType; // What type of event is it?
 
     // Getters and Setters
     public EventTime getTime() {
@@ -30,6 +30,8 @@ public class Event
     // Constructor
     public Event(int id, type eventType, Module module)
     {
+        // TODO: Add validation IF(User can now create events through input, e.g. lunch)
+
         this.id = id;
         this.eventType = eventType;
         this.module = module;
@@ -41,13 +43,21 @@ public class Event
         String returnValue = new String();
         returnValue += "[";
 
+        // TODO: Add event sub-types for different study sessions
+
         switch(this.eventType) // Switch based on eventType
         {
             case LECTURE:
                 returnValue += "Lecture: ";
                 break;
+            case LECTURE_REVIEW:
+                returnValue +="Lecture Review: ";
+                break;
             case STUDY:
                 returnValue += "Study: ";
+                break;
+            case EXAM_PREP:
+                returnValue += "Exam Prep: ";
                 break;
             case OTHER:
                 returnValue += "Other: ";
@@ -56,12 +66,12 @@ public class Event
                 throw new IllegalArgumentException("Event must have a valid type."); // Throw appropriate exception
         }
 
-        if(this.module != null) //
+        if(this.module != null) // if the module has been set, i.e. it is not a non-study event like lunch
         {
-            returnValue += module;
+            returnValue += module; // Add the module to the string
         }
 
-        returnValue += time + "]";
+        returnValue += time + "(" + this.getID() + ")" + "]";
 
         return returnValue;
     }

@@ -34,9 +34,9 @@ public class EventTime implements Comparable
         if (!(obj instanceof EventTime)) return false;
         EventTime o = (EventTime) obj;
 
-        if(o.getID().compareTo(this.getID()) == 0)
+        if(o.getID().compareTo(this.getID()) == 0) // If the IDs of the eventTimes are the same
         {
-            if(o.getTime().compareTo(this.getTime()) == 0)
+            if(o.getTime().compareTo(this.getTime()) == 0) // If their times are the same
             {
                 return true;
             }
@@ -85,7 +85,6 @@ public class EventTime implements Comparable
     {
         int firstColon = dayAndTime.indexOf(':');
         String onlyTime = dayAndTime.substring(firstColon+1);
-        System.out.println(onlyTime);
         int secondColon = onlyTime.indexOf(':');
 
         return Integer.parseInt(onlyTime.substring(secondColon - 2, secondColon));
@@ -99,7 +98,7 @@ public class EventTime implements Comparable
         int day2 = getDayFromID(secondObj.getID());
 
 
-        if(day1 > day2)
+        if(day1 > day2) // Compare based on day
         {
             return 1;
         }
@@ -112,7 +111,7 @@ public class EventTime implements Comparable
             int time1 = getTimeFromString(this.getTime());
             int time2 = getTimeFromString(secondObj.getTime());
 
-            if(time1 > time2)
+            if(time1 > time2) // Compare based on time, given day is the same
             {
                 return 1;
             }
