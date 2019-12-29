@@ -10,8 +10,10 @@ import java.util.Scanner;
 public class UserInput
 {
     // Class instance variables
+    public static boolean isWindows = System.getProperty("os.name").startsWith("Windows");
     private ArrayList<Module> modules = new ArrayList<>();
     private ArrayList<EventTime> lectureTimes = new ArrayList<>();
+    private ArrayList<EventTime> busyTimes = new ArrayList<>();
 
     // Getters
     public ArrayList<Module> getModules() {
@@ -20,6 +22,10 @@ public class UserInput
 
     public ArrayList<EventTime> getLectureTimes() {
         return lectureTimes;
+    }
+
+    public ArrayList<EventTime> getBusyTimes() {
+        return busyTimes;
     }
 
     public boolean userInputRequired()
@@ -39,10 +45,13 @@ public class UserInput
 
     public void initializeTimetable(boolean userDefined)
     {
+
+
         defineTimetable(); // Sets the user-defined variables for the timetable bounds
         if(userDefined)
         {
             setModules(); // Lets the user create a series of modules, along with their corresponding lectures
+            setBusyTimes(); // Lets the user set the times they are busy
         }
     }
 
@@ -99,12 +108,12 @@ public class UserInput
 
     // Methods for handling lecture creation
 
-    private EventTime createLecture()
+    private EventTime createEvent()
     {
         Scanner readInput = new Scanner(System.in);
-        int dayOfTheWeek = validBoundedInteger(0, 8, "Please enter the day of the week (as a number from 1 - 7 inclusive) of this lecture: ", "Error: Input must lie within range: {1, 7} inclusive.\n");
+        int dayOfTheWeek = validBoundedInteger(0, 8, "Please enter the day of the week (as a number from 1 - 7 inclusive) of this event: ", "Error: Input must lie within range: {1, 7} inclusive.\n");
 
-        int timeOfDay = validBoundedInteger(-1, 24, "Please enter the starting hour of this lecture (24-hour format): ", "Error: input must lie within range: {0, 23} inclusive.\n");
+        int timeOfDay = validBoundedInteger(-1, 24, "Please enter the starting hour of this event (24-hour format): ", "Error: input must lie within range: {0, 23} inclusive.\n");
 
         return Data.constructEventTime(dayOfTheWeek, timeOfDay);
     }
@@ -115,9 +124,22 @@ public class UserInput
 
         for(int i = 0; i < numberOfLectures; i++)
         {
-            lectureTimes.add(createLecture());
+            lectureTimes.add(createEvent());
         }
     }
+
+    // Methods for handling removing busy times from calendar (E.g. lunch, society events)
+
+    public void setBusyTimes()
+    {
+        int numberOfBusyTimes = validBoundedInteger(-1, 25, "Please enter the number of times you wish to mark as busy: ", "Error: number of busy times must lie within inclusive range: {0, 24}/\n");
+
+        for(int i = 0; i < numberOfBusyTimes; i++) // Create each busy time to be removed
+        {
+            busyTimes.add(createEvent()); // Create a new event to be removed
+        }
+    }
+
 
     // Verification functions
 
@@ -159,14 +181,28 @@ public class UserInput
 
     public static void printInstruction(String input)
     {
-        System.out.print((char)27 + "[34m" + input);
-        System.out.print((char) 27 + "[39m"); // Why doesn't this reset the value..?
+        if(!isWindows) // Because Windows does not support ANSI Escape Codes
+        {
+            System.out.print((char)27 + "[34m" + input);
+            System.out.print((char) 27 + "[39m"); // Why doesn't this reset the value..?
+        }
+        else
+        {
+            System.out.println(input);
+        }
     }
 
     public static void printError(String input)
     {
-        System.out.print((char)27 + "[31m" + input);
-        System.out.print((char) 27 + "[39m");
+        if(!isWindows) // Because Windows does not support ANSI Escape Codes
+        {
+            System.out.print((char)27 + "[31m" + input);
+            System.out.print((char) 27 + "[39m");
+        }
+        else
+        {
+            System.out.println(input);
+        }
     }
 
 }

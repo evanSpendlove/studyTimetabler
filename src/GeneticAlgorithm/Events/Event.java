@@ -13,7 +13,10 @@ public class Event
         return time;
     }
 
-    public void setTime(EventTime time) {
+    public void setTime(EventTime time)
+    {
+        // TODO: Add regex or parsing check to ensure matches certain format: DAY: TIME {XX:00}
+
         this.time = time;
     }
 
@@ -27,14 +30,39 @@ public class Event
         return eventType;
     }
 
+    private void setValidID(int id)
+    {
+        if(id >= 0)
+        {
+            this.id = id;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Event IDs cannot be negative.");
+        }
+    }
+
+
     // Constructor
     public Event(int id, type eventType, Module module)
     {
         // TODO: Add validation IF(User can now create events through input, e.g. lunch)
 
-        this.id = id;
+        setValidID(id);
         this.eventType = eventType;
         this.module = module;
+    }
+
+    // Utility methods
+
+    public int getEventDayAsInt()
+    {
+        return this.getTime().getDayFromID(this.getTime().getTime());
+    }
+
+    public int getEventTimeAsInt()
+    {
+        return this.getTime().getTimeFromString(this.getTime().getTime());
     }
 
     @Override
@@ -71,7 +99,7 @@ public class Event
             returnValue += module; // Add the module to the string
         }
 
-        returnValue += time + "(" + this.getID() + ")" + "]";
+        returnValue += time.idToString() + "(" + this.getID() + ")" + "]";
 
         return returnValue;
     }

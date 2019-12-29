@@ -74,7 +74,7 @@ public class Timetable
         weights[2] = 5; // Two events occurring simultaneously is a critical error
 
         int averageHoursPerDay = this.getEvents().size() / Driver.getDaysPerWeek();
-        int[] hoursPerDay = new int[5];
+        int[] hoursPerDay = new int[Driver.getDaysPerWeek()];
 
         for(int i = 0; i < events.size(); i++)
         {
@@ -102,7 +102,7 @@ public class Timetable
                         throw new IllegalArgumentException("Driver: Time Preference is set to an invalid value.");
                 }
 
-                int time = events.get(i).getTime().getTimeFromString(events.get(i).getTime().getTime());
+                int time = events.get(i).getEventTimeAsInt();
 
                 if(time < startHour || time > endHour) // If the event lies outside the desired time range
                 {
@@ -114,7 +114,7 @@ public class Timetable
                 }
             }
 
-            int curDay = events.get(i).getTime().getDayFromID(events.get(i).getTime().getTime());
+            int curDay = events.get(i).getEventDayAsInt();
 
             hoursPerDay[curDay]++;
 

@@ -1,7 +1,6 @@
 package GeneticAlgorithm;
 
 import GeneticAlgorithm.CommandLineIO.UserInput;
-import GeneticAlgorithm.Events.Event;
 import GeneticAlgorithm.Events.EventTime;
 import GeneticAlgorithm.Events.Module;
 
@@ -40,7 +39,8 @@ public class Data
         if(userDefined)
         {
             modules = input.getModules();
-            removeLecturesFromTimetable(input.getLectureTimes());
+            removeEventsFromTimetable(input.getLectureTimes());
+            removeEventsFromTimetable(input.getBusyTimes());
         }
         else
         {
@@ -130,9 +130,9 @@ public class Data
         eventTimes.removeAll(lectures); // Remove all lectures as these time slots are taken
     }
 
-    private void removeLecturesFromTimetable(ArrayList<EventTime> lectures)
+    private void removeEventsFromTimetable(ArrayList<EventTime> events)
     {
-        eventTimes.removeAll(lectures); // Remove all lectures as these time slots are taken
+        eventTimes.removeAll(events); // Remove all EventTimes for these events as these time slots are taken
     }
 
     private void checkPreferencePossible()
@@ -206,12 +206,20 @@ public class Data
                 newEventTime += "Friday: ";
                 newEventID += "Fri";
                 break;
+            case 5:
+                newEventTime += "Saturday: ";
+                newEventID += "Sat";
+                break;
+            case 6:
+                newEventTime += "Sunday: ";
+                newEventID += "Sun";
+                break;
             default:
                 throw new IllegalArgumentException("Invalid day of the week");
         }
 
         // Then, add the time
-        if(time == Driver.getDayStartTime())
+        if(time < 10)
         {
             newEventTime += "0";
             newEventTime += Driver.getDayStartTime();

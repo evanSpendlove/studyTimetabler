@@ -29,8 +29,34 @@ public class Module
     }
 
     @Override
+    public boolean equals(Object obj)
+    {
+        // Basic checks
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Module)) return false;
+        Module o = (Module) obj;
+
+        if(o.getModuleCode().compareTo(this.getModuleCode()) == 0) // If the Module codes are the same
+        {
+            if(o.getModuleName().compareTo(this.getModuleName()) == 0) // If the module names are the same
+            {
+                if(o.getHourPerWeek() == this.getHourPerWeek()) // Comparing the hours per week (int)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public String toString()
     {
-        return "{" + this.moduleCode + " - " + this.moduleName + " (" + this.hourPerWeek + ")" + "}";
+        // Opting for shorter toString:
+        //return "{" + this.moduleCode + " - " + this.moduleName + " (" + this.hourPerWeek + ")" + "}";
+
+        return "{" + this.moduleCode + "}";
     }
 }

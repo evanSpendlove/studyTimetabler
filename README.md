@@ -18,8 +18,8 @@ Then, it generates a list of study-sessions for each module.
 The genetic algorithm creates a population of timetables ranked by fitness.
 The fitness of the timetable is measured by the number of constraints broken and the number of times a constraint is broken. 
 ### Output
-Currently, the program outputs the final solution and intermediary generations to the console.
-I plan to alter the input and output to be more convenient for the end user.
+Currently, the program outputs the final solution to the console.
+I plan to add a GUI for this program to make setup and output more convenient and visual.
 I plan to output an .ics file for the study sessions, so you can add them directly to your calendar app of choice.
 
 ## Installation
@@ -30,10 +30,18 @@ Windows, OS X & Linux:
     Install Java (1.8 or later).
     This project was designed in IntelliJ.
     Alternatively, you can copy the source code files into another IDE and compile them.
+
+    Note: Will need JavaFX for GUI when it is completed.
+    Note: CommandLineIO package uses ANSI escape codes that are more linux/unix friendly -> though an OS check if performed
 ```
 
+## Current Additional Features
+- Additional constraints: preferences for time-of-day (morning, day, evening); even distribution of work per day
+- Full Command Line input/output with coloured input/output (through ANSI Escape Codes).
+
+
 ## Planned Features
-- Additional constraints such as preferences for time-of-day (morning/day/evening)
+~~- Additional constraints such as preferences for time-of-day (morning/day/evening)~~
 - .ics export file format for study sessions
 - Grouping of study sessions
 - Adding preference for study sessions to be placed as close as possible to the lecture
@@ -41,6 +49,8 @@ Windows, OS X & Linux:
 
 ## Release History
 
+* 0.1.0
+    * First release version - user-defined inputs, command line I/O packaged and completed, code modularised, additional constraints added.
 * 0.0.1
     * Working first version - console based output, hard-coded inputs.
 
@@ -59,4 +69,3 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
-

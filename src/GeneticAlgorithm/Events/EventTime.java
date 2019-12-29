@@ -20,6 +20,28 @@ public class EventTime implements Comparable
         this.time = time;
     }
 
+    public String timeToString()
+    {
+        int curTime = getTimeFromString(this.time);
+        String result = new String();
+
+        if(curTime < 10)
+        {
+            result += "0";
+        }
+
+        result += curTime;
+        result += ":00";
+
+        return result;
+
+    }
+
+    public String idToString()
+    {
+        return "[" + id + "]";
+    }
+
     @Override
     public String toString()
     {
