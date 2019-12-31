@@ -1,13 +1,7 @@
-package GeneticAlgorithm;
+package io.github.evanspendlove.genetic_algorithm;
 
-import GeneticAlgorithm.CommandLineIO.Output;
-import GeneticAlgorithm.CommandLineIO.UserInput;
-import GeneticAlgorithm.Events.Event;
-import GeneticAlgorithm.Events.EventTime;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import io.github.evanspendlove.genetic_algorithm.io_command_line.Output;
+import io.github.evanspendlove.genetic_algorithm.io_command_line.UserInput;
 
 /*
     Features to add:

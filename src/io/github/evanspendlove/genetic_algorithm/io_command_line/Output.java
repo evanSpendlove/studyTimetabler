@@ -1,11 +1,11 @@
-package GeneticAlgorithm.CommandLineIO;
+package io.github.evanspendlove.genetic_algorithm.io_command_line;
 
-import GeneticAlgorithm.Data;
-import GeneticAlgorithm.Driver;
-import GeneticAlgorithm.Events.Event;
-import GeneticAlgorithm.Events.EventTime;
-import GeneticAlgorithm.Population;
-import GeneticAlgorithm.Timetable;
+import io.github.evanspendlove.genetic_algorithm.Data;
+import io.github.evanspendlove.genetic_algorithm.Driver;
+import io.github.evanspendlove.genetic_algorithm.events.Event;
+import io.github.evanspendlove.genetic_algorithm.events.EventTime;
+import io.github.evanspendlove.genetic_algorithm.Population;
+import io.github.evanspendlove.genetic_algorithm.Timetable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

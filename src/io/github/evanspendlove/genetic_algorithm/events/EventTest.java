@@ -1,4 +1,4 @@
-package GeneticAlgorithm.Events;
+package io.github.evanspendlove.genetic_algorithm.events;
 
 import static org.junit.jupiter.api.Assertions.*;
 
