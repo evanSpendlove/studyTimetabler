@@ -1,4 +1,4 @@
-package GeneticAlgorithm;
+package io.github.evanspendlove.genetic_algorithm;
 
 import java.util.ArrayList;
 

@@ -1,16 +1,11 @@
-package GeneticAlgorithm.GUI;
+package io.github.evanspendlove.genetic_algorithm.gui;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.collections.*;
 import javafx.stage.Stage;
 public class Initialize extends Application {
 

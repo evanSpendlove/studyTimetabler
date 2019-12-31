@@ -1,6 +1,6 @@
-package GeneticAlgorithm;
+package io.github.evanspendlove.genetic_algorithm;
 
-import GeneticAlgorithm.Events.Event;
+import io.github.evanspendlove.genetic_algorithm.events.Event;
 
 import java.util.ArrayList;
 
